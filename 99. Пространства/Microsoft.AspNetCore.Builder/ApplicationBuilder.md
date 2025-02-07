@@ -2,7 +2,6 @@
 
 [src](https://github.com/dotnet/aspnetcore/blob/main/src/Http/Http/src/Builder/ApplicationBuilder.cs)
 
-
 ```csharp
 public class ApplicationBuilder : IApplicationBuilder
 {
