@@ -36,3 +36,11 @@ internal WebApplicationBuilder(WebApplicationOptions options, Action<IHostBuilde
   Для создания **WebApplication** используется **WebApplicationBuilder** который оборачивает **HostAppliationBuilder**
 2. Добавляются настройки WebRootPath (хранение в памяти) если они передаются в параметре
 3. Создается **bootstrapHostBuilder** который оборачивает **HostAppliationBuilder**. bootstrapHostBuilder ишет сервис (HostBuilderContext)service.ImplementationInstance
+
+#### 2 Построенеи хоста
+```csharp
+_hostApplicationBuilder.Services.Add(_genericWebHostServiceDescriptor);
+Host.ApplyServiceProviderFactory(_hostApplicationBuilder);
+_builtApplication = new WebApplication(_hostApplicationBuilder.Build());
+return _builtApplication;
+```
