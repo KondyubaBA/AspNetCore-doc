@@ -17,7 +17,12 @@ public class ApplicationBuilder : IApplicationBuilder
 
   private T GetProperty<T>(string key);
   private void SetProperty<T>(string key, T value);
-  public IApplicationBuilder Use(Func<RequestDelegate, RequestDelegate> middleware);
+  public IApplicationBuilder Use(Func<RequestDelegate, RequestDelegate> middleware)
+  {
+	_components.Add(middleware);
+	_descriptions?.Add(CreateMiddlewareDescription(middleware));
+	return this;
+  }
   private static string CreateMiddlewareDescription(Func<RequestDelegate, RequestDelegate> middleware);
   public IApplicationBuilder New();
 
