@@ -20,6 +20,28 @@ public class ApplicationBuilder : IApplicationBuilder
   public IApplicationBuilder Use(Func<RequestDelegate, RequestDelegate> middleware);
   private static string CreateMiddlewareDescription(Func<RequestDelegate, RequestDelegate> middleware);
   public IApplicationBuilder New();
-  public RequestDelegate Build();
+
+  public RequestDelegate Build()
+	{
+		RequestDelegate requestDelegate = delegate(HttpContext context)
+		{
+			Endpoint endpoint = context.GetEndpoint();
+			if (endpoint?.RequestDelegate != null)
+			{
+				throw new InvalidOperationException($"The request reached the end of the pipeline without executing the endpoint: '{endpoint.DisplayName}'. Please register the EndpointMiddleware using '{"IApplicationBuilder"}.UseEndpoints(...)' if using routing.");
+			}
+			if (!context.Response.HasStarted)
+			{
+				context.Response.StatusCode = 404;
+			}
+			context.Items["__RequestUnhandled"] = true;
+			return Task.CompletedTask;
+		};
+		for (int num = _components.Count - 1; num >= 0; num--)
+		{
+			requestDelegate = _components[num](requestDelegate);
+		}
+		return requestDelegate;
+	}
 }
 ```
