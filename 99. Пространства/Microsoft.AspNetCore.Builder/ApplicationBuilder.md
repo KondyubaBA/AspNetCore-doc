@@ -11,5 +11,15 @@ public class ApplicationBuilder : IApplicationBuilder
   private readonly List<string> _descriptions;
   private readonly IDebugger _debugger;
   private int MiddlewareCount => _components.Count;
+  public IServiceProvider ApplicationServices;
+  public IFeatureCollection ServerFeatures;
+  public IDictionary<string, object?> Properties;
+
+  private T GetProperty<T>(string key);
+  private void SetProperty<T>(string key, T value);
+  public IApplicationBuilder Use(Func<RequestDelegate, RequestDelegate> middleware);
+  private static string CreateMiddlewareDescription(Func<RequestDelegate, RequestDelegate> middleware);
+  public IApplicationBuilder New();
+  public RequestDelegate Build();
 }
 ```
