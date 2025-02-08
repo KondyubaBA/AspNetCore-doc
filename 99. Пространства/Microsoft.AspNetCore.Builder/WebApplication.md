@@ -29,6 +29,17 @@ IFeatureCollection IApplicationBuilder.ServerFeatures => ServerFeatures;
 IDictionary<string, object?> IApplicationBuilder.Properties => Properties;
 ```
 
+### .ctor
+```csharp
+internal WebApplication(IHost host)
+{
+    _host = host;
+    ApplicationBuilder = new ApplicationBuilder(host.Services, ServerFeatures);
+    Logger = host.Services.GetRequiredService<ILoggerFactory>().CreateLogger(Environment.ApplicationName ?? nameof(WebApplication));
+
+    Properties[GlobalEndpointRouteBuilderKey] = this;
+}
+```
 
 ### Методы
 #### Создает WebApplicationBuilder
