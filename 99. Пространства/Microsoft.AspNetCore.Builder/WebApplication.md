@@ -37,4 +37,10 @@ public static WebApplicationBuilder CreateBuilder()
 {
   return new WebApplicationBuilder(new WebApplicationOptions());
 }
+
+public IApplicationBuilder Use(Func<RequestDelegate, RequestDelegate> middleware)
+{
+  ApplicationBuilder.Use(middleware);
+  return this;
+}
 ```
