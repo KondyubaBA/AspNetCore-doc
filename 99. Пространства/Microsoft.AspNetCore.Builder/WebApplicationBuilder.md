@@ -4,6 +4,7 @@
 #### Состояния
 ```csharp
 private readonly HostApplicationBuilder _hostApplicationBuilder;
+private readonly ServiceDescriptor _genericWebHostServiceDescriptor;
 ```
 
 #### ctor
