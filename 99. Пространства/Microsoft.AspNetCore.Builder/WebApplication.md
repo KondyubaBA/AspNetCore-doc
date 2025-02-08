@@ -43,4 +43,14 @@ public IApplicationBuilder Use(Func<RequestDelegate, RequestDelegate> middleware
   ApplicationBuilder.Use(middleware);
   return this;
 }
+
+internal RequestDelegate BuildRequestDelegate()
+{
+  return ApplicationBuilder.Build();
+}
+
+RequestDelegate IApplicationBuilder.Build()
+{
+  return BuildRequestDelegate();
+}
 ```
