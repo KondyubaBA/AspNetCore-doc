@@ -17,36 +17,70 @@ private readonly ServiceDescriptor _genericWebHostServiceDescriptor;
 
 #### ctor
 ```csharp
-internal WebApplicationBuilder(WebApplicationOptions options, Action<IHostBuilder>? configureDefaults = null)
+internal WebApplicationBuilder(WebApplicationOptions options, bool slim, Action<IHostBuilder>? configureDefaults = null)
 {
-  ConfigurationManager configurationManager = new ConfigurationManager();
-  configurationManager.AddEnvironmentVariables("ASPNETCORE_");
-  _hostApplicationBuilder = new HostApplicationBuilder(new HostApplicationBuilderSettings
-  {
-    Args = options.Args,
-    ApplicationName = options.ApplicationName,
-    EnvironmentName = options.EnvironmentName,
-    ContentRootPath = options.ContentRootPath,
-    Configuration = configurationManager
-  });
-  if (options.WebRootPath != null)
-  {
-    Configuration.AddInMemoryCollection(new KeyValuePair<string, string>[1]
+    Debug.Assert(slim, "should only be called with slim: true");
+
+    var configuration = new ConfigurationManager();
+
+    configuration.AddEnvironmentVariables(prefix: "ASPNETCORE_");
+
+    // SetDefaultContentRoot needs to be added between 'ASPNETCORE_' and 'DOTNET_' in order to match behavior of the non-slim WebApplicationBuilder.
+    SetDefaultContentRoot(options, configuration);
+
+    // Add the default host environment variable configuration source.
+    // This won't be added by CreateEmptyApplicationBuilder.
+    configuration.AddEnvironmentVariables(prefix: "DOTNET_");
+
+    _hostApplicationBuilder = Microsoft.Extensions.Hosting.Host.CreateEmptyApplicationBuilder(new HostApplicationBuilderSettings
     {
-      new KeyValuePair<string, string>(WebHostDefaults.WebRootKey, options.WebRootPath)
+        Args = options.Args,
+        ApplicationName = options.ApplicationName,
+        EnvironmentName = options.EnvironmentName,
+        ContentRootPath = options.ContentRootPath,
+        Configuration = configuration,
     });
-  }
-  BootstrapHostBuilder bootstrapHostBuilder = new BootstrapHostBuilder(_hostApplicationBuilder);
-  configureDefaults?.Invoke(bootstrapHostBuilder);
-  bootstrapHostBuilder.ConfigureWebHostDefaults(delegate(IWebHostBuilder webHostBuilder)
-  {
-    webHostBuilder.Configure(ConfigureApplication);
-    InitializeWebHostSettings(webHostBuilder);
-  }, delegate(WebHostBuilderOptions options)
-  {
-    options.SuppressEnvironmentConfiguration = true;
-  });
-  _genericWebHostServiceDescriptor = InitializeHosting(bootstrapHostBuilder);
+
+    // Ensure the same behavior of the non-slim WebApplicationBuilder by adding the default "app" Configuration sources
+    ApplyDefaultAppConfigurationSlim(_hostApplicationBuilder.Environment, configuration, options.Args);
+    AddDefaultServicesSlim(configuration, _hostApplicationBuilder.Services);
+
+    // configure the ServiceProviderOptions here since CreateEmptyApplicationBuilder won't.
+    var serviceProviderFactory = GetServiceProviderFactory(_hostApplicationBuilder);
+    _hostApplicationBuilder.ConfigureContainer(serviceProviderFactory);
+
+    // Set WebRootPath if necessary
+    if (options.WebRootPath is not null)
+    {
+        Configuration.AddInMemoryCollection(new[]
+        {
+            new KeyValuePair<string, string?>(WebHostDefaults.WebRootKey, options.WebRootPath),
+        });
+    }
+
+    // Run methods to configure web host defaults early to populate services
+    var bootstrapHostBuilder = new BootstrapHostBuilder(_hostApplicationBuilder);
+
+    // This is for testing purposes
+    configureDefaults?.Invoke(bootstrapHostBuilder);
+
+    bootstrapHostBuilder.ConfigureSlimWebHost(
+        webHostBuilder =>
+        {
+            AspNetCore.WebHost.ConfigureWebDefaultsSlim(webHostBuilder);
+
+            // Runs inline.
+            webHostBuilder.Configure(ConfigureApplication);
+
+            InitializeWebHostSettings(webHostBuilder);
+        },
+        options =>
+        {
+            // We've already applied "ASPNETCORE_" environment variables to hosting config
+            options.SuppressEnvironmentConfiguration = true;
+        });
+
+    _genericWebHostServiceDescriptor = InitializeHosting(bootstrapHostBuilder);
 }
 ```
 
