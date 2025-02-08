@@ -50,14 +50,21 @@ internal WebApplicationBuilder(WebApplicationOptions options, Action<IHostBuilde
 
 #### Методы
 ```csharp
-[MemberNotNull(new string[] { "Environment", "Host", "WebHost" })]
+[MemberNotNull(nameof(Environment), nameof(Host), nameof(WebHost))]
 private ServiceDescriptor InitializeHosting(BootstrapHostBuilder bootstrapHostBuilder)
 {
-  ServiceDescriptor result = bootstrapHostBuilder.RunDefaultCallbacks();
-  WebHostBuilderContext webHostBuilderContext = (WebHostBuilderContext)bootstrapHostBuilder.Properties[typeof(WebHostBuilderContext)];
-  Environment = webHostBuilderContext.HostingEnvironment;
-  Host = new ConfigureHostBuilder(bootstrapHostBuilder.Context, Configuration, Services);
-  WebHost = new ConfigureWebHostBuilder(webHostBuilderContext, Configuration, Services);
-  return result;
+    // This applies the config from ConfigureWebHostDefaults
+    // Grab the GenericWebHostService ServiceDescriptor so we can append it after any user-added IHostedServices during Build();
+    var genericWebHostServiceDescriptor = bootstrapHostBuilder.RunDefaultCallbacks();
+
+    // Grab the WebHostBuilderContext from the property bag to use in the ConfigureWebHostBuilder. Then
+    // grab the IWebHostEnvironment from the webHostContext. This also matches the instance in the IServiceCollection.
+    var webHostContext = (WebHostBuilderContext)bootstrapHostBuilder.Properties[typeof(WebHostBuilderContext)];
+    Environment = webHostContext.HostingEnvironment;
+
+    Host = new ConfigureHostBuilder(bootstrapHostBuilder.Context, Configuration, Services);
+    WebHost = new ConfigureWebHostBuilder(webHostContext, Configuration, Services);
+
+    return genericWebHostServiceDescriptor;
 }
 ```
