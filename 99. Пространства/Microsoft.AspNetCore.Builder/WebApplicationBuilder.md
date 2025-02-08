@@ -17,22 +17,13 @@ private readonly ServiceDescriptor _genericWebHostServiceDescriptor;
 
 #### ctor
 ```csharp
-internal WebApplicationBuilder(WebApplicationOptions options, bool slim, Action<IHostBuilder>? configureDefaults = null)
+internal WebApplicationBuilder(WebApplicationOptions options, Action<IHostBuilder>? configureDefaults = null)
 {
-    Debug.Assert(slim, "should only be called with slim: true");
-
     var configuration = new ConfigurationManager();
 
     configuration.AddEnvironmentVariables(prefix: "ASPNETCORE_");
 
-    // SetDefaultContentRoot needs to be added between 'ASPNETCORE_' and 'DOTNET_' in order to match behavior of the non-slim WebApplicationBuilder.
-    SetDefaultContentRoot(options, configuration);
-
-    // Add the default host environment variable configuration source.
-    // This won't be added by CreateEmptyApplicationBuilder.
-    configuration.AddEnvironmentVariables(prefix: "DOTNET_");
-
-    _hostApplicationBuilder = Microsoft.Extensions.Hosting.Host.CreateEmptyApplicationBuilder(new HostApplicationBuilderSettings
+    _hostApplicationBuilder = new HostApplicationBuilder(new HostApplicationBuilderSettings
     {
         Args = options.Args,
         ApplicationName = options.ApplicationName,
@@ -40,14 +31,6 @@ internal WebApplicationBuilder(WebApplicationOptions options, bool slim, Action<
         ContentRootPath = options.ContentRootPath,
         Configuration = configuration,
     });
-
-    // Ensure the same behavior of the non-slim WebApplicationBuilder by adding the default "app" Configuration sources
-    ApplyDefaultAppConfigurationSlim(_hostApplicationBuilder.Environment, configuration, options.Args);
-    AddDefaultServicesSlim(configuration, _hostApplicationBuilder.Services);
-
-    // configure the ServiceProviderOptions here since CreateEmptyApplicationBuilder won't.
-    var serviceProviderFactory = GetServiceProviderFactory(_hostApplicationBuilder);
-    _hostApplicationBuilder.ConfigureContainer(serviceProviderFactory);
 
     // Set WebRootPath if necessary
     if (options.WebRootPath is not null)
@@ -64,21 +47,18 @@ internal WebApplicationBuilder(WebApplicationOptions options, bool slim, Action<
     // This is for testing purposes
     configureDefaults?.Invoke(bootstrapHostBuilder);
 
-    bootstrapHostBuilder.ConfigureSlimWebHost(
-        webHostBuilder =>
-        {
-            AspNetCore.WebHost.ConfigureWebDefaultsSlim(webHostBuilder);
+    bootstrapHostBuilder.ConfigureWebHostDefaults(webHostBuilder =>
+    {
+        // Runs inline.
+        webHostBuilder.Configure(ConfigureApplication);
 
-            // Runs inline.
-            webHostBuilder.Configure(ConfigureApplication);
-
-            InitializeWebHostSettings(webHostBuilder);
-        },
-        options =>
-        {
-            // We've already applied "ASPNETCORE_" environment variables to hosting config
-            options.SuppressEnvironmentConfiguration = true;
-        });
+        InitializeWebHostSettings(webHostBuilder);
+    },
+    options =>
+    {
+        // We've already applied "ASPNETCORE_" environment variables to hosting config
+        options.SuppressEnvironmentConfiguration = true;
+    });
 
     _genericWebHostServiceDescriptor = InitializeHosting(bootstrapHostBuilder);
 }
