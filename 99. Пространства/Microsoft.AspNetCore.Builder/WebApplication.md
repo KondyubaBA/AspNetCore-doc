@@ -70,4 +70,9 @@ private void Listen(string? url)
     addresses.Clear();
     addresses.Add(url);
 }
+
+public Task StartAsync(CancellationToken cancellationToken = default) =>
+    _host.StartAsync(cancellationToken);
+
+
 ```
