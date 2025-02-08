@@ -1,6 +1,8 @@
 > Microsoft.AspNetCore.dll  
 > Microsoft.AspNetCore.Builder.WebApplicationBuilder
 
+[src](https://github.com/dotnet/aspnetcore/blob/main/src/DefaultBuilder/src/WebApplicationBuilder.cs)
+
 #### Состояния
 ```csharp
 public IWebHostEnvironment Environment { get; private set; }
