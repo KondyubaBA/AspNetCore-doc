@@ -43,4 +43,31 @@ public IApplicationBuilder Use(Func<RequestDelegate, RequestDelegate> middleware
   ApplicationBuilder.Use(middleware);
   return this;
 }
+
+public void Run([StringSyntax(StringSyntaxAttribute.Uri)] string? url = null)
+{
+    Listen(url);
+    HostingAbstractionsHostExtensions.Run(this);
+}
+
+private void Listen(string? url)
+{
+    if (url is null)
+    {
+        return;
+    }
+
+    var addresses = ServerFeatures.Get<IServerAddressesFeature>()?.Addresses;
+    if (addresses is null)
+    {
+        throw new InvalidOperationException($"Changing the URL is not supported because no valid {nameof(IServerAddressesFeature)} was found.");
+    }
+    if (addresses.IsReadOnly)
+    {
+        throw new InvalidOperationException($"Changing the URL is not supported because {nameof(IServerAddressesFeature.Addresses)} {nameof(ICollection<string>.IsReadOnly)}.");
+    }
+
+    addresses.Clear();
+    addresses.Add(url);
+}
 ```
