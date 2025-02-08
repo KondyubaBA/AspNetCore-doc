@@ -6,6 +6,8 @@
 public IWebHostEnvironment Environment { get; private set; }
 public ConfigureHostBuilder Host { get; private set; }
 public ConfigureWebHostBuilder WebHost { get; private set; }
+public IServiceCollection Services => _hostApplicationBuilder.Services;
+public ConfigurationManager Configuration => _hostApplicationBuilder.Configuration;
 
 private readonly HostApplicationBuilder _hostApplicationBuilder;
 private readonly ServiceDescriptor _genericWebHostServiceDescriptor;
