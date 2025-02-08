@@ -41,3 +41,17 @@ internal WebApplicationBuilder(WebApplicationOptions options, Action<IHostBuilde
   _genericWebHostServiceDescriptor = InitializeHosting(bootstrapHostBuilder);
 }
 ```
+
+#### Методы
+```csharp
+[MemberNotNull(new string[] { "Environment", "Host", "WebHost" })]
+private ServiceDescriptor InitializeHosting(BootstrapHostBuilder bootstrapHostBuilder)
+{
+  ServiceDescriptor result = bootstrapHostBuilder.RunDefaultCallbacks();
+  WebHostBuilderContext webHostBuilderContext = (WebHostBuilderContext)bootstrapHostBuilder.Properties[typeof(WebHostBuilderContext)];
+  Environment = webHostBuilderContext.HostingEnvironment;
+  Host = new ConfigureHostBuilder(bootstrapHostBuilder.Context, Configuration, Services);
+  WebHost = new ConfigureWebHostBuilder(webHostBuilderContext, Configuration, Services);
+  return result;
+}
+```
