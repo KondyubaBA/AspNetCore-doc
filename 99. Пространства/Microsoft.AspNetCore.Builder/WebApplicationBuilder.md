@@ -3,6 +3,10 @@
 
 #### Состояния
 ```csharp
+public IWebHostEnvironment Environment { get; private set; }
+public ConfigureHostBuilder Host { get; private set; }
+public ConfigureWebHostBuilder WebHost { get; private set; }
+
 private readonly HostApplicationBuilder _hostApplicationBuilder;
 private readonly ServiceDescriptor _genericWebHostServiceDescriptor;
 ```
