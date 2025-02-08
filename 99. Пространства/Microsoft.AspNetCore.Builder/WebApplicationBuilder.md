@@ -83,4 +83,14 @@ private ServiceDescriptor InitializeHosting(BootstrapHostBuilder bootstrapHostBu
 
     return genericWebHostServiceDescriptor;
 }
+
+public WebApplication Build()
+{
+    // ConfigureContainer callbacks run after ConfigureServices callbacks including the one that adds GenericWebHostService by default.
+    // One nice side effect is this gives a way to configure an IHostedService that starts after the server and stops beforehand.
+    _hostApplicationBuilder.Services.Add(_genericWebHostServiceDescriptor);
+    Host.ApplyServiceProviderFactory(_hostApplicationBuilder);
+    _builtApplication = new WebApplication(_hostApplicationBuilder.Build());
+    return _builtApplication;
+}
 ```
