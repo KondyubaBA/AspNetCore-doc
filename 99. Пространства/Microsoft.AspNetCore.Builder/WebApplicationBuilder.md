@@ -1,3 +1,11 @@
+> Microsoft.AspNetCore.dll  
+> Microsoft.AspNetCore.Builder.WebApplicationBuilder
+
+#### Состояния
+```csharp
+private readonly HostApplicationBuilder _hostApplicationBuilder;
+```
+
 #### ctor
 ```csharp
 internal WebApplicationBuilder(WebApplicationOptions options, Action<IHostBuilder>? configureDefaults = null)
