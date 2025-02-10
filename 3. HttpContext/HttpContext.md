@@ -78,7 +78,32 @@ public abstract class HttpRequest
 **RouteValues** - Получает или устанавливает значения маршрута, которые могут быть использованы для маршрутизации.
 **ReadFormAsync()** - Асинхронно читает данные формы из тела запроса и возвращает их в виде IFormCollection. Это полезно, когда вы ожидаете, что запрос содержит данные формы.  
 
+## HttpResponse
+```csharp
+public abstract class HttpResponse
+{
+	public abstract HttpContext HttpContext { get; }
+	public abstract int StatusCode { get; set; }
+	public abstract IHeaderDictionary Headers { get; }
+	public abstract Stream Body { get; set; }
+	public virtual PipeWriter BodyWriter
+	public abstract long? ContentLength { get; set; }
+	public abstract string? ContentType { get; set; }
+	public abstract IResponseCookies Cookies { get; }
+	public abstract bool HasStarted { get; }
+	public abstract void OnStarting(Func<object, Task> callback, object state);
 
+	public virtual void OnStarting(Func<Task> callback)
+	public abstract void OnCompleted(Func<object, Task> callback, object state);
+	public virtual void RegisterForDispose(IDisposable disposable)
+	public virtual void RegisterForDisposeAsync(IAsyncDisposable disposable)
+	public virtual void OnCompleted(Func<Task> callback)
+	public virtual void Redirect([StringSyntax("Uri")] string location)
+	public abstract void Redirect([StringSyntax("Uri")] string location, bool permanent);
+	public virtual Task StartAsync(CancellationToken cancellationToken = default(CancellationToken))
+	public virtual Task CompleteAsync()
+}
+```
 
 
 
