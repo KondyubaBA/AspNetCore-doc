@@ -3,8 +3,10 @@
 Microsoft.AspNetCore.**Namespace**  
 Microsoft.AspNetCore.**NameDll**.dll
 
-|  | NameMiddleware         | Namespace            | NameDll     |
-|--|------------------------|----------------------|-------------|
-| 0| AntiforgeryMiddleware  | Antiforgery.Internal | Antiforgery |
-| 1| StaticFileMiddleware   | StaticFiles          | StaticFiles |
-| 2| DefaultFilesMiddleware | StaticFiles          | StaticFiles |
+|  | NameMiddleware           | Namespace            | NameDll        |
+|--|--------------------------|----------------------|----------------|
+| 1| AntiforgeryMiddleware    | Antiforgery.Internal | Antiforgery    |
+| 2| AuthenticationMiddleware | Authentication       | Authentication |
+| 3| CorsMiddleware           | Cors.Infrastructure  | Cors           |
+| 3| StaticFileMiddleware     | StaticFiles          | StaticFiles    |
+| 4| DefaultFilesMiddleware   | StaticFiles          | StaticFiles    |
