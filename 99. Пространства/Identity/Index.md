@@ -45,8 +45,27 @@ Services.AddSingleton<IPersonalDataProtector, DefaultPersonalDataProtector>();
 Services.AddSingleton<ILookupProtector, TProtector>();
 Services.AddSingleton<ILookupProtectorKeyRing, TKeyRing>();
 ```
-
-
-
+#### AddRoleManager<TRoleManager>
+```csharp
+AddScoped(typeof(RoleManager<>).MakeGenericType(RoleType), typeof(TRoleManager));
+```
+#### AddRoles<TRole>
+```csharp
+Services.TryAddScoped<RoleManager<TRole>>();
+Services.AddScoped(typeof(IUserClaimsPrincipalFactory<>).MakeGenericType(UserType), typeof(UserClaimsPrincipalFactory<, >).MakeGenericType(UserType, RoleType));
+```
+#### AddRoleStore<TStore>
+```csharp
+AddScoped(typeof(IRoleStore<>).MakeGenericType(RoleType), typeof(TStore));
+```
+#### AddRoleValidator<TRole>
+```csharp
+AddScoped(typeof(IRoleValidator<>).MakeGenericType(RoleType), typeof(TRole));
+```
+#### AddTokenProvider
+#### AddUserConfirmation
+#### AddUserManager
+#### AddUserStore
+#### AddUserValidator
 
 
