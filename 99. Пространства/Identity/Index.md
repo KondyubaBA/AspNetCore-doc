@@ -39,3 +39,14 @@ Services.AddScoped<IdentityErrorDescriber, TDescriber>();
 ```csharp
 AddScoped(typeof(IPasswordValidator<>).MakeGenericType(UserType), typeof(TValidator));
 ```
+#### AddPersonalDataProtection<TProtector, TKeyRing>()
+```csharp
+Services.AddSingleton<IPersonalDataProtector, DefaultPersonalDataProtector>();
+Services.AddSingleton<ILookupProtector, TProtector>();
+Services.AddSingleton<ILookupProtectorKeyRing, TKeyRing>();
+```
+
+
+
+
+
