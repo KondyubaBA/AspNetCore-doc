@@ -25,3 +25,5 @@ public static IdentityBuilder AddIdentityCore<TUser>(this IServiceCollection ser
   return new IdentityBuilder(typeof(TUser), services);
 }
 ```
+
+### Builder IdentityBuilder
