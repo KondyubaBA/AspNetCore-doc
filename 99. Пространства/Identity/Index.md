@@ -27,3 +27,15 @@ public static IdentityBuilder AddIdentityCore<TUser>(this IServiceCollection ser
 ```
 
 ### Builder IdentityBuilder
+#### AddClaimsPrincipalFactory<TFactory>()
+```csharp
+AddScoped(typeof(IUserClaimsPrincipalFactory<>).MakeGenericType(UserType), typeof(TFactory));
+```
+#### AddErrorDescriber<TDescriber>()
+```csharp
+Services.AddScoped<IdentityErrorDescriber, TDescriber>();
+```
+#### AddPasswordValidator<TValidator>()
+```csharp
+AddScoped(typeof(IPasswordValidator<>).MakeGenericType(UserType), typeof(TValidator));
+```
