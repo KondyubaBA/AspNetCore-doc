@@ -88,3 +88,20 @@ public interface IUserTwoFactorStore<TUser> : IUserStore<TUser> where TUser : cl
     Task<bool> GetTwoFactorEnabledAsync(TUser user, CancellationToken cancellationToken);
 }
 ```
+#### 6. IUserPasswordStore
+```csharp
+public interface IUserPasswordStore<TUser> : IUserStore<TUser> where TUser : class
+{
+    Task SetPasswordHashAsync(TUser user, string? passwordHash, CancellationToken cancellationToken);
+    Task<string?> GetPasswordHashAsync(TUser user, CancellationToken cancellationToken);
+    Task<bool> HasPasswordAsync(TUser user, CancellationToken cancellationToken);
+}
+```
+#### 6. IUserPasswordStore
+```csharp
+public interface IUserSecurityStampStore<TUser> : IUserStore<TUser> where TUser : class
+{
+    Task SetSecurityStampAsync(TUser user, string stamp, CancellationToken cancellationToken);
+    Task<string?> GetSecurityStampAsync(TUser user, CancellationToken cancellationToken);
+}
+```
