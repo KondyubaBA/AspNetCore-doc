@@ -38,4 +38,8 @@
     - LockoutEnd
     - LockoutEnabled
     - AccessFailedCount
-       
+#### AspNetUserTokens
+     - UserId
+     - LoginProvider
+     - Name
+     - Value
