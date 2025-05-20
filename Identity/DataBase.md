@@ -97,11 +97,32 @@ public interface IUserPasswordStore<TUser> : IUserStore<TUser> where TUser : cla
     Task<bool> HasPasswordAsync(TUser user, CancellationToken cancellationToken);
 }
 ```
-#### 6. IUserPasswordStore
+#### 7. IUserSecurityStampStore
 ```csharp
 public interface IUserSecurityStampStore<TUser> : IUserStore<TUser> where TUser : class
 {
     Task SetSecurityStampAsync(TUser user, string stamp, CancellationToken cancellationToken);
     Task<string?> GetSecurityStampAsync(TUser user, CancellationToken cancellationToken);
+}
+```
+#### 8. IUserRoleStore
+```csharp
+public interface IUserRoleStore<TUser> : IUserStore<TUser> where TUser : class
+{
+    Task AddToRoleAsync(TUser user, string roleName, CancellationToken cancellationToken);
+    Task RemoveFromRoleAsync(TUser user, string roleName, CancellationToken cancellationToken);
+    Task<IList<string>> GetRolesAsync(TUser user, CancellationToken cancellationToken);
+    Task<bool> IsInRoleAsync(TUser user, string roleName, CancellationToken cancellationToken);
+    Task<IList<TUser>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken);
+}
+```
+#### 9. IUserLoginStore
+```csharp
+public interface IUserLoginStore<TUser> : IUserStore<TUser> where TUser : class
+{
+    Task AddLoginAsync(TUser user, UserLoginInfo login, CancellationToken cancellationToken);
+    Task RemoveLoginAsync(TUser user, string loginProvider, string providerKey, CancellationToken cancellationToken);
+    Task<IList<UserLoginInfo>> GetLoginsAsync(TUser user, CancellationToken cancellationToken);
+    Task<TUser?> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken);
 }
 ```
