@@ -54,3 +54,11 @@ public interface IUserAuthenticationTokenStore<TUser> : IUserStore<TUser> where 
     Task<string?> GetTokenAsync(TUser user, string loginProvider, string name, CancellationToken cancellationToken);
 }
 ```
+#### 2. IUserAuthenticatorKeyStore
+```csharp
+public interface IUserAuthenticatorKeyStore<TUser> : IUserStore<TUser> where TUser : class
+{
+    Task SetAuthenticatorKeyAsync(TUser user, string key, CancellationToken cancellationToken);
+    Task<string?> GetAuthenticatorKeyAsync(TUser user, CancellationToken cancellationToken);
+}
+```
