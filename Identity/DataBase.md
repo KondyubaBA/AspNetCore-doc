@@ -126,3 +126,57 @@ public interface IUserLoginStore<TUser> : IUserStore<TUser> where TUser : class
     Task<TUser?> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken);
 }
 ```
+#### 10. IUserEmailStore
+```csharp
+public interface IUserEmailStore<TUser> : IUserStore<TUser> where TUser : class
+{
+    Task SetEmailAsync(TUser user, string? email, CancellationToken cancellationToken);
+    Task<string?> GetEmailAsync(TUser user, CancellationToken cancellationToken);
+    Task<bool> GetEmailConfirmedAsync(TUser user, CancellationToken cancellationToken);
+    Task SetEmailConfirmedAsync(TUser user, bool confirmed, CancellationToken cancellationToken);
+    Task<TUser?> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken);
+    Task<string?> GetNormalizedEmailAsync(TUser user, CancellationToken cancellationToken);
+    Task SetNormalizedEmailAsync(TUser user, string? normalizedEmail, CancellationToken cancellationToken);
+}
+```
+#### 11. IUserPhoneNumberStore
+```csharp
+public interface IUserPhoneNumberStore<TUser> : IUserStore<TUser> where TUser : class
+{
+    Task SetPhoneNumberAsync(TUser user, string? phoneNumber, CancellationToken cancellationToken);
+    Task<string?> GetPhoneNumberAsync(TUser user, CancellationToken cancellationToken);
+    Task<bool> GetPhoneNumberConfirmedAsync(TUser user, CancellationToken cancellationToken);
+    Task SetPhoneNumberConfirmedAsync(TUser user, bool confirmed, CancellationToken cancellationToken);
+}
+```
+#### 12. IUserClaimStore
+```csharp
+public interface IUserClaimStore<TUser> : IUserStore<TUser> where TUser : class
+{
+    Task<IList<Claim>> GetClaimsAsync(TUser user, CancellationToken cancellationToken);
+    Task AddClaimsAsync(TUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken);
+    Task ReplaceClaimAsync(TUser user, Claim claim, Claim newClaim, CancellationToken cancellationToken);
+    Task RemoveClaimsAsync(TUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken);
+    Task<IList<TUser>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken);
+}
+```
+#### 13. IUserLockoutStore
+```csharp
+public interface IUserLockoutStore<TUser> : IUserStore<TUser> where TUser : class
+{
+    Task<DateTimeOffset?> GetLockoutEndDateAsync(TUser user, CancellationToken cancellationToken);
+    Task SetLockoutEndDateAsync(TUser user, DateTimeOffset? lockoutEnd, CancellationToken cancellationToken);
+    Task<int> IncrementAccessFailedCountAsync(TUser user, CancellationToken cancellationToken);
+    Task ResetAccessFailedCountAsync(TUser user, CancellationToken cancellationToken);
+    Task<int> GetAccessFailedCountAsync(TUser user, CancellationToken cancellationToken);
+    Task<bool> GetLockoutEnabledAsync(TUser user, CancellationToken cancellationToken);
+    Task SetLockoutEnabledAsync(TUser user, bool enabled, CancellationToken cancellationToken);
+}
+```
+#### 14. IQueryableUserStore
+```csharp
+public interface IQueryableUserStore<TUser> : IUserStore<TUser> where TUser : class
+{
+    IQueryable<TUser> Users { get; }
+}
+```
