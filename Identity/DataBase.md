@@ -43,3 +43,14 @@
      - LoginProvider
      - Name
      - Value
+
+### UserManager
+#### 1. IUserAuthenticationTokenStore
+```csharp
+public interface IUserAuthenticationTokenStore<TUser> : IUserStore<TUser> where TUser : class
+{
+    Task SetTokenAsync(TUser user, string loginProvider, string name, string? value, CancellationToken cancellationToken);
+    Task RemoveTokenAsync(TUser user, string loginProvider, string name, CancellationToken cancellationToken);
+    Task<string?> GetTokenAsync(TUser user, string loginProvider, string name, CancellationToken cancellationToken);
+}
+```
