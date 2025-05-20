@@ -62,3 +62,29 @@ public interface IUserAuthenticatorKeyStore<TUser> : IUserStore<TUser> where TUs
     Task<string?> GetAuthenticatorKeyAsync(TUser user, CancellationToken cancellationToken);
 }
 ```
+#### 3. IUserTwoFactorRecoveryCodeStore
+```csharp
+public interface IUserTwoFactorRecoveryCodeStore<TUser> : IUserStore<TUser> where TUser : class
+{
+    Task ReplaceCodesAsync(TUser user, IEnumerable<string> recoveryCodes, CancellationToken cancellationToken);
+    Task<bool> RedeemCodeAsync(TUser user, string code, CancellationToken cancellationToken);
+    Task<int> CountCodesAsync(TUser user, CancellationToken cancellationToken);
+}
+```
+#### 4. IUserTwoFactorRecoveryCodeStore
+```csharp
+public interface IUserTwoFactorRecoveryCodeStore<TUser> : IUserStore<TUser> where TUser : class
+{
+    Task ReplaceCodesAsync(TUser user, IEnumerable<string> recoveryCodes, CancellationToken cancellationToken);
+    Task<bool> RedeemCodeAsync(TUser user, string code, CancellationToken cancellationToken);
+    Task<int> CountCodesAsync(TUser user, CancellationToken cancellationToken);
+}
+```
+#### 5. IUserTwoFactorStore
+```csharp
+public interface IUserTwoFactorStore<TUser> : IUserStore<TUser> where TUser : class
+{
+    Task SetTwoFactorEnabledAsync(TUser user, bool enabled, CancellationToken cancellationToken);
+    Task<bool> GetTwoFactorEnabledAsync(TUser user, CancellationToken cancellationToken);
+}
+```
