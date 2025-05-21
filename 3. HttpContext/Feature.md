@@ -96,3 +96,10 @@
 
 ### 33. IRouteValuesFeature
 Я — IRouteValuesFeature, и я предоставляю доступ к значениям маршрута в ASP.NET Core!
+
+### 34. IHttpActivityFeature
+Я — IHttpActivityFeature, и я предоставляю доступ к информации о текущей HTTP-активности в ASP.NET Core!
+
+### 35. IHttpAuthenticationFeature
+Я — IHttpAuthenticationFeature, и я предоставляю доступ к информации о текущем процессе аутентификации в ASP.NET Core! 
+
