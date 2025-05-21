@@ -103,3 +103,5 @@
 ### 35. IHttpAuthenticationFeature
 Я — IHttpAuthenticationFeature, и я предоставляю доступ к информации о текущем процессе аутентификации в ASP.NET Core! 
 
+### 36. IHttpRequestTimeoutFeature
+Я — IHttpRequestTimeoutFeature, и я предоставляю доступ к информации о таймауте текущего HTTP-запроса в ASP.NET Core!
