@@ -29,3 +29,11 @@ MapGroup - служит для добавления префикса групп�
 "type": "RouteNameMetadata",
 "value": "RouteName: GetProducts"
 ```
+
+### 5. WithGroupName
+Группирует маршруты для групповой настройки и пр.
+Добавявлет метаданные:
+```
+"type": "EndpointGroupNameAttribute",
+"value": "Microsoft.AspNetCore.Routing.EndpointGroupNameAttribute"
+```
