@@ -25,6 +25,9 @@
             <mxPoint x="380" y="560" as="targetPoint" />
           </mxGeometry>
         </mxCell>
+        <mxCell id="d9jZ1DCHQiVjaFTJcHDj-7" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;span style=&quot;color: rgb(0, 64, 133); background-color: transparent; text-align: left;&quot;&gt;IMetricListenerConfigurationFactory&lt;/span&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;span style=&quot;color: rgb(25, 25, 112); font-weight: bold;&quot;&gt;GetConfiguration&lt;/span&gt;(&lt;span style=&quot;color: rgb(255, 0, 0);&quot;&gt;string&lt;/span&gt; listenerName):&amp;nbsp;&lt;span style=&quot;color: rgb(0, 64, 133); background-color: transparent;&quot;&gt;IConfiguration&lt;/span&gt;&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="760" y="10" width="310" height="50" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
