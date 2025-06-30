@@ -1,0 +1,9 @@
+### Сборки
+ - Microsoft.Extensions.Logging.Abstractions.dll
+ - Microsoft.Extensions.Logging.Configuration.dll
+ - Microsoft.Extensions.Logging.Console.dll
+ - Microsoft.Extensions.Logging.Debug.dll
+ - Microsoft.Extensions.Logging.dll
+ - Microsoft.Extensions.Logging.EventLog.dll
+ - Microsoft.Extensions.Logging.EventSource.dll
+ - Microsoft.Extensions.Logging.TraceSource.dll
