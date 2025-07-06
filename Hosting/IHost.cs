@@ -7,29 +7,86 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Extensions.Hosting
 {
-    /// <summary>
-    /// A program abstraction.
-    /// </summary>
     public interface IHost : IDisposable
     {
-        /// <summary>
-        /// Gets the services configured for the program (for example, using <see cref="M:HostBuilder.ConfigureServices(Action&lt;HostBuilderContext,IServiceCollection&gt;)" />).
-        /// </summary>
         IServiceProvider Services { get; }
-
-        /// <summary>
-        /// Starts the <see cref="IHostedService" /> objects configured for the program.
-        /// The application will run until interrupted or until <see cref="M:IHostApplicationLifetime.StopApplication()" /> is called.
-        /// </summary>
-        /// <param name="cancellationToken">Used to abort program start.</param>
-        /// <returns>A <see cref="Task"/> that will be completed when the <see cref="IHost"/> starts.</returns>
         Task StartAsync(CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Attempts to gracefully stop the program.
-        /// </summary>
-        /// <param name="cancellationToken">Used to indicate when stop should no longer be graceful.</param>
-        /// <returns>A <see cref="Task"/> that will be completed when the <see cref="IHost"/> stops.</returns>
         Task StopAsync(CancellationToken cancellationToken = default);
+    }
+}
+
+namespace Microsoft.Extensions.Hosting
+{
+    public static class HostingAbstractionsHostExtensions
+    {
+        public static void Start(this IHost host)
+        {
+            host.StartAsync().GetAwaiter().GetResult();
+        }
+
+        public static async Task StopAsync(this IHost host, TimeSpan timeout)
+        {
+            using CancellationTokenSource cts = new CancellationTokenSource(timeout);
+            await host.StopAsync(cts.Token).ConfigureAwait(false);
+        }
+
+        public static void WaitForShutdown(this IHost host)
+        {
+            host.WaitForShutdownAsync().GetAwaiter().GetResult();
+        }
+
+        public static void Run(this IHost host)
+        {
+            host.RunAsync().GetAwaiter().GetResult();
+        }
+
+        public static async Task RunAsync(this IHost host, CancellationToken token = default)
+        {
+            try
+            {
+                await host.StartAsync(token).ConfigureAwait(false);
+
+                await host.WaitForShutdownAsync(token).ConfigureAwait(false);
+            }
+            finally
+            {
+                if (host is IAsyncDisposable asyncDisposable)
+                {
+                    await asyncDisposable.DisposeAsync().ConfigureAwait(false);
+                }
+                else
+                {
+                    host.Dispose();
+                }
+            }
+        }
+
+        public static async Task WaitForShutdownAsync(this IHost host, CancellationToken token = default)
+        {
+            IHostApplicationLifetime applicationLifetime = host.Services.GetRequiredService<IHostApplicationLifetime>();
+
+            token.Register(state =>
+            {
+                ((IHostApplicationLifetime)state!).StopApplication();
+            },
+            applicationLifetime);
+
+#if NET8_0_OR_GREATER
+            await Task.Delay(Timeout.Infinite, applicationLifetime.ApplicationStopping).ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
+#else
+            var waitForStop = new TaskCompletionSource<object?>(TaskCreationOptions.RunContinuationsAsynchronously);
+            applicationLifetime.ApplicationStopping.Register(obj =>
+            {
+                var tcs = (TaskCompletionSource<object?>)obj!;
+                tcs.TrySetResult(null);
+            }, waitForStop);
+
+            await waitForStop.Task.ConfigureAwait(false);
+#endif
+
+            // Host will use its default ShutdownTimeout if none is specified.
+            // The cancellation token may have been triggered to unblock waitForStop. Don't pass it here because that would trigger an abortive shutdown.
+            await host.StopAsync(CancellationToken.None).ConfigureAwait(false);
+        }
     }
 }
